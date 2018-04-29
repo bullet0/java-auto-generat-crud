@@ -14,7 +14,7 @@ import java.sql.Statement;
 public class StuDao {
 	public Connection getConnection() {
 		Connection connection = null;
-		try {
+		try { 
 			Class.forName("jdbc:mysql:///my_lol?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Hongkong");
 			connection = DriverManager.getConnection("com.mysql.cj.jdbc.Driver","root","123456");
 		} catch (ClassNotFoundException | SQLException e) {
