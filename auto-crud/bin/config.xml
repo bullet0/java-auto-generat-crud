@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autoConfiguration>
+	<dataSource>
+		<url>jdbc:mysql:///my_lol?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Hongkong</url>
+		<driverClass>com.mysql.cj.jdbc.Driver</driverClass>
+		<username>root</username>
+		<password>123456</password>
+	</dataSource>
+	<tables>
+		<table>
+			<package>com/hero</package>
+			<tableName>stu</tableName>
+		</table>
+	</tables>
+</autoConfiguration>
