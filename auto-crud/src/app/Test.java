@@ -293,7 +293,7 @@ public class Test {
 	        // 通过read方法读取一个文件 转换成Document对象  
 	        Document document = reader.read(new File("src/config.xml"));
 			//获取根节点元素对象  
-			 rootElement = document.getRootElement(); 
+			rootElement = document.getRootElement(); 
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
