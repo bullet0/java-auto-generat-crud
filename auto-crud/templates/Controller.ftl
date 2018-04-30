@@ -72,14 +72,19 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		${tableName?cap_first} ${tableName?uncap_first} = new ${tableName?cap_first}();
 		
+		<#if pkEntity.type?lower_case == 'int'>
+		<#if pkEntity.state>
+		${tableName?uncap_first}.set${pkEntity.name?cap_first}((Integer)value);
+		<#else>
+		${tableName?uncap_first}.set${pkEntity.name}((Integer)value);
+		</#if>
+		<#else>
 		<#if pkEntity.state>
 		${tableName?uncap_first}.set${pkEntity.name?cap_first}((${pkEntity.type?cap_first})value);
 		<#else>
 		${tableName?uncap_first}.set${pkEntity.name}((${pkEntity.type?cap_first})value);
 		</#if>
-		
-		
-		
+		</#if>
 		service.delete(${tableName?uncap_first});
 		try {
 			resp.sendRedirect(req.getContextPath()+"/${className?uncap_first}?method=findAll");
@@ -117,12 +122,19 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		</#if>
 		
+		<#if pj.type?lower_case == 'int'>
+		<#if pj.state>
+		${tableName?uncap_first}.set${pj.name?cap_first}((Integer)value);
+		<#else>
+		${tableName?uncap_first}.set${pj.name}((Integer)value);
+		</#if>
+		<#else>
 		<#if pj.state>
 		${tableName?uncap_first}.set${pj.name?cap_first}((${pj.type?cap_first})value);
 		<#else>
 		${tableName?uncap_first}.set${pj.name}((${pj.type?cap_first})value);
 		</#if>
-		
+		</#if>
 		
 		</#list>
 		</#if>
@@ -160,13 +172,19 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		${tableName?cap_first} ${tableName?uncap_first} = new ${tableName?cap_first}();
 		
+		<#if pkEntity.type?lower_case == 'int'>
+		<#if pkEntity.state>
+		${tableName?uncap_first}.set${pkEntity.name?cap_first}((Integer)value);
+		<#else>
+		${tableName?uncap_first}.set${pkEntity.name}((Integer)value);
+		</#if>
+		<#else>
 		<#if pkEntity.state>
 		${tableName?uncap_first}.set${pkEntity.name?cap_first}((${pkEntity.type?cap_first})value);
 		<#else>
 		${tableName?uncap_first}.set${pkEntity.name}((${pkEntity.type?cap_first})value);
 		</#if>
-		
-		
+		</#if>
 		
 		${tableName?uncap_first} = service.findOne(${tableName?uncap_first});
 		req.setAttribute("${tableName?uncap_first}",${tableName?uncap_first});
@@ -206,10 +224,18 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		</#if>
 		
+		<#if pj.type?lower_case == 'int'>
+		<#if pj.state>
+		${tableName?uncap_first}.set${pj.name?cap_first}((Integer)value);
+		<#else>
+		${tableName?uncap_first}.set${pj.name}((Integer)value);
+		</#if>
+		<#else>
 		<#if pj.state>
 		${tableName?uncap_first}.set${pj.name?cap_first}((${pj.type?cap_first})value);
 		<#else>
 		${tableName?uncap_first}.set${pj.name}((${pj.type?cap_first})value);
+		</#if>
 		</#if>
 		
 		

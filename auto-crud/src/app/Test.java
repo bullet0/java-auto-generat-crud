@@ -83,6 +83,7 @@ public class Test {
 			
 			ResultSetMetaData metaData = rs.getMetaData();
 			List<Entity> list = new ArrayList<>();
+			List<Entity> snakeCase = new ArrayList<>();
 			for(int i = 0;i<metaData.getColumnCount();i++) {
 				//这里需要将表中的字段类型和名字都保存一下
 				//int = 4  
@@ -92,7 +93,7 @@ public class Test {
 				int columnType = metaData.getColumnType(i+1);
 				String type = null;
 				if(columnType == 4) {
-					type = "Integer";
+					type = "int";
 				}else if(columnType == 12) {
 					type = "String";
 				}else if(columnType == 91) {
@@ -103,8 +104,9 @@ public class Test {
 				
 				
 				
-				String camalNaming = camalNaming(metaData.getColumnName(i+1));
+				String camalNaming = toCamalNaming(metaData.getColumnName(i+1));
 				Entity entity = new Entity(type,camalNaming);
+				Entity snakeCaseEntity = new Entity(type,metaData.getColumnName(i+1));
 				if(camalNaming != null && camalNaming.length()>1 && Character.isUpperCase(camalNaming.charAt(1))) {
 					entity.setState(false);
 				}
@@ -113,11 +115,11 @@ public class Test {
 					pkEntity = entity;
 				}
 				list.add(entity);
-				
+				snakeCase.add(snakeCaseEntity);
 			}
 			
 			
-			createJavaFile(packageName,camalNaming(tbName),list,pkEntity);
+			createJavaFile(packageName,toCamalNaming(tbName),list,pkEntity,snakeCase);
 			
 		}
 		
@@ -125,11 +127,11 @@ public class Test {
 
 	
 	
-	private static void createJavaFile(String packageName, String tbName, List<Entity> list, Entity pkEntity) throws Exception {
+	private static void createJavaFile(String packageName, String tbName, List<Entity> list, Entity pkEntity, List<Entity> snakeCase) throws Exception {
 		createPoJOJavaFile(packageName,tbName,list);
 		createControllerJavaFile(packageName,tbName,list,pkEntity);
 		createServiceJavaFile(packageName,tbName);
-		createDaoJavaFile(packageName,tbName,list,pkEntity);
+		createDaoJavaFile(packageName,tbName,list,pkEntity,snakeCase);
 	}
 
 	private static void createPoJOJavaFile(String packageName, String tbName, List<Entity> list) throws Exception {
@@ -142,8 +144,8 @@ public class Test {
 		
 		dataMap.put("baseClassPath", packageName.replaceAll("/", "\\."));
 		dataMap.put("packagePath", packageName.replaceAll("/", "\\.") + ".pojo");
-		dataMap.put("tableName", upperCase(tbName));
-		dataMap.put("className", upperCase(tbName));
+		dataMap.put("tableName", toUpperCase(tbName));
+		dataMap.put("className", toUpperCase(tbName));
 		dataMap.put("list", list);
 		
 		
@@ -154,7 +156,7 @@ public class Test {
 		if(!file.exists()) {
 			file.mkdirs();
 		}
-		FileOutputStream out = new FileOutputStream(new File(file,upperCase(tbName)+".java"));
+		FileOutputStream out = new FileOutputStream(new File(file,toUpperCase(tbName)+".java"));
 		OutputStreamWriter output = new OutputStreamWriter(out);
 		
 		template.process(dataMap, output);
@@ -173,8 +175,8 @@ public class Test {
 		
 		dataMap.put("baseClassPath", packageName.replaceAll("/", "\\."));
 		dataMap.put("packagePath", packageName.replaceAll("/", "\\.") + ".controller");
-		dataMap.put("tableName", upperCase(tbName));
-		dataMap.put("className", upperCase(tbName)+"Controller");
+		dataMap.put("tableName", toUpperCase(tbName));
+		dataMap.put("className", toUpperCase(tbName)+"Controller");
 		dataMap.put("pkEntity",pkEntity);
 		dataMap.put("list",list);
 		
@@ -184,7 +186,7 @@ public class Test {
 		if(!file.exists()) {
 			file.mkdirs();
 		}
-		FileOutputStream out = new FileOutputStream(new File(file,upperCase(tbName)+"Controller.java"));
+		FileOutputStream out = new FileOutputStream(new File(file,toUpperCase(tbName)+"Controller.java"));
 		OutputStreamWriter output = new OutputStreamWriter(out);
 		
 		template.process(dataMap, output);
@@ -203,8 +205,8 @@ public class Test {
 		
 		dataMap.put("baseClassPath", packageName.replaceAll("/", "\\."));
 		dataMap.put("packagePath", packageName.replaceAll("/", "\\.") + ".service");
-		dataMap.put("tableName", upperCase(tbName));
-		dataMap.put("className", upperCase(tbName)+"Service");
+		dataMap.put("tableName", toUpperCase(tbName));
+		dataMap.put("className", toUpperCase(tbName)+"Service");
 		
 		
 		Template template = config.getTemplate("Service.ftl","utf-8");
@@ -213,7 +215,7 @@ public class Test {
 		if(!file.exists()) {
 			file.mkdirs();
 		}
-		FileOutputStream out = new FileOutputStream(new File(file,upperCase(tbName)+"Service.java"));
+		FileOutputStream out = new FileOutputStream(new File(file,toUpperCase(tbName)+"Service.java"));
 		OutputStreamWriter output = new OutputStreamWriter(out);
 		
 		template.process(dataMap, output);
@@ -222,7 +224,7 @@ public class Test {
 		output.close();
 	}
 	
-	private static void createDaoJavaFile(String packageName, String tbName, List<Entity> list, Entity pkEntity) throws Exception {
+	private static void createDaoJavaFile(String packageName, String tbName, List<Entity> list, Entity pkEntity, List<Entity> snakeCase) throws Exception {
 		Configuration config = new Configuration(Configuration.VERSION_2_3_23);
 		config.setDirectoryForTemplateLoading(new File("templates"));
 		
@@ -231,10 +233,53 @@ public class Test {
 		
 		dataMap.put("baseClassPath", packageName.replaceAll("/", "\\."));
 		dataMap.put("packagePath", packageName.replaceAll("/", "\\.") + ".dao");
-		dataMap.put("tableName", upperCase(tbName));
-		dataMap.put("className", upperCase(tbName)+"Dao");
+		dataMap.put("tableName", toUpperCase(tbName));
+		dataMap.put("className", toUpperCase(tbName)+"Dao");
 		dataMap.put("list", list);
+		dataMap.put("snakeCase", snakeCase);
 		dataMap.put("pkEntity", pkEntity);
+		dataMap.put("snakeCasePKName", toSnake(pkEntity.getName()));
+		
+		StringBuilder deleteSQL = new StringBuilder("delete from ");
+		deleteSQL.append(tbName);
+		deleteSQL.append(" where ");
+		deleteSQL.append(toSnake(pkEntity.getName()));
+		deleteSQL.append(" = ?");
+		dataMap.put("deleteSQL", deleteSQL);
+		System.out.println(deleteSQL);
+		
+		StringBuilder updateSQL = new StringBuilder("update ");
+		updateSQL.append(tbName);
+		updateSQL.append(" set ");
+		for (Entity entity : snakeCase) {
+			updateSQL.append(entity.getName());
+			updateSQL.append("=?,");
+		}
+		updateSQL = new StringBuilder(updateSQL.substring(0, updateSQL.length()-1));
+		updateSQL.append(" where ");
+		updateSQL.append(toSnake(pkEntity.getName()));
+		updateSQL.append(" = ?");
+		dataMap.put("updateSQL", updateSQL);
+		System.out.println(updateSQL);
+		
+		
+		StringBuilder insertSQL = new StringBuilder("insert into ");
+		insertSQL.append(tbName);
+		insertSQL.append("(");
+		for (Entity entity : snakeCase) {
+			insertSQL.append(entity.getName());
+			insertSQL.append(",");
+		}
+		insertSQL = new StringBuilder(insertSQL.substring(0, insertSQL.length()-1));
+		insertSQL.append(") values (");
+		for (Entity entity : snakeCase) {
+			insertSQL.append("?,");
+		}
+		insertSQL = new StringBuilder(insertSQL.substring(0, insertSQL.length()-1));
+		insertSQL.append(")");
+		dataMap.put("insertSQL", insertSQL);
+		System.out.println(insertSQL);
+		
 		
 		dataMap.put("url", url);
 		dataMap.put("driverClass",driverClass);
@@ -247,7 +292,7 @@ public class Test {
 		if(!file.exists()) {
 			file.mkdirs();
 		}
-		FileOutputStream out = new FileOutputStream(new File(file,upperCase(tbName)+"Dao.java"));
+		FileOutputStream out = new FileOutputStream(new File(file,toUpperCase(tbName)+"Dao.java"));
 		OutputStreamWriter output = new OutputStreamWriter(out);
 		
 		template.process(dataMap, output);
@@ -256,6 +301,8 @@ public class Test {
 		output.close();
 		
 	}
+
+	
 
 	public static void main(String[] args) throws Exception {
 		
@@ -268,11 +315,11 @@ public class Test {
 	}
 	
 	//首字母转大写
-	public static String upperCase(String str) {  
+	public static String toUpperCase(String str) {  
 	    return str.substring(0, 1).toUpperCase() + str.substring(1);  
 	}  
-	//首字母转大写
-	public static String camalNaming(String str) {  
+	//驼峰命名
+	public static String toCamalNaming(String str) {  
 		StringBuilder sb = new StringBuilder();
 	    for (int i = 0; i < str.length(); i++) {
 			if(str.charAt(i) == '_') {
@@ -280,6 +327,20 @@ public class Test {
 				i++;
 			}else {
 				sb.append(str.charAt(i));
+			}
+		}
+		
+		return sb.toString();  
+	}
+	//蛇形命名
+	private static Object toSnake(String string) {
+		StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < string.length(); i++) {
+			if(Character.isUpperCase(string.charAt(i))) {
+				sb.append("_");
+				sb.append(string.charAt(i));
+			}else {
+				sb.append(string.charAt(i));
 			}
 		}
 		
