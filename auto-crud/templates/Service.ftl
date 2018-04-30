@@ -15,7 +15,7 @@ public class ${className?cap_first} {
 		dao.update(${tableName?uncap_first});
 	}
 
-	public Stu findOne(${tableName?cap_first} ${tableName?uncap_first}) {
+	public ${tableName?cap_first} findOne(${tableName?cap_first} ${tableName?uncap_first}) {
 		return dao.findOne(${tableName?uncap_first});
 	}
 
@@ -23,7 +23,7 @@ public class ${className?cap_first} {
 		dao.add(${tableName?uncap_first});
 	}
 
-	public List<Stu> findAll() {
+	public List<${tableName?cap_first}> findAll() {
 		return dao.findAll();
 	}
 }

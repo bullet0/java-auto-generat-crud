@@ -9,7 +9,11 @@
 	<tables>
 		<table>
 			<package>com/hero</package>
-			<tableName>stu</tableName>
+			<tableName>aa_bb</tableName>
+		</table>
+		<table>
+			<package>com/hero</package>
+			<tableName>hero</tableName>
 		</table>
 	</tables>
 </autoConfiguration>

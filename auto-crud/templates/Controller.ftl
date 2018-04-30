@@ -6,11 +6,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import java.text.SimpleDateFormat;
 import ${baseClassPath?lower_case}.service.${tableName?cap_first}Service;
 import ${baseClassPath?lower_case}.pojo.${tableName?cap_first};
 import java.sql.Date;
 import java.util.List;
+import java.text.ParseException;
 
 public class ${className?cap_first} extends HttpServlet{
 	private ${tableName?cap_first}Service service = new ${tableName?cap_first}Service();
@@ -49,20 +50,20 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		String ${pkEntity.name} = req.getParameter("${pkEntity.name}");
 		
-		<#if pkEntity.type?lower_case == 'int'>
-		
-		value = Integer.valueOf(${pkEntity.name});
-		
+		<#if pkEntity.type?lower_case == 'integer'>
+		if(${pkEntity.name} != null){
+			value = Integer.valueOf(${pkEntity.name});
+		}
 		<#elseif pkEntity.type?lower_case == 'double'>
-		
-		value = Double.valueOf(${pkEntity.name});
-		
+		if(${pkEntity.name} != null)
+			value = Double.valueOf(${pkEntity.name});
+		}
 		<#elseif pkEntity.type?lower_case == 'date'>
-		
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.Date parse = fmt.parse(${pkEntity.name});
-		value = new java.sql.Date( parse.getTime());
-		
+		if(${pkEntity.name} != null)
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date parse = fmt.parse(${pkEntity.name});
+			value = new java.sql.Date( parse.getTime());
+		}
 		
 		<#else>
 		value = ${pkEntity.name};
@@ -72,7 +73,7 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		${tableName?cap_first} ${tableName?uncap_first} = new ${tableName?cap_first}();
 		
-		<#if pkEntity.type?lower_case == 'int'>
+		<#if pkEntity.type?lower_case == 'integer'>
 		<#if pkEntity.state>
 		${tableName?uncap_first}.set${pkEntity.name?cap_first}((Integer)value);
 		<#else>
@@ -102,27 +103,32 @@ public class ${className?cap_first} extends HttpServlet{
 		<#list list as pj>
 		
 		String ${pj.name} = req.getParameter("${pj.name}");
-		<#if pj.type?lower_case == 'int'>
-		
-		value = Integer.valueOf(${pj.name});
-		
+		<#if pj.type?lower_case == 'integer'>
+		if(${pj.name} != null){
+			value = Integer.valueOf(${pj.name});
+		}
 		<#elseif pj.type?lower_case == 'double'>
-		
-		value = Double.valueOf(${pj.name});
-		
+		if(${pj.name} != null){
+			value = Double.valueOf(${pj.name});
+		}
 		<#elseif pj.type?lower_case == 'date'>
-		
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.Date parse = fmt.parse(${pj.name});
-		value = new java.sql.Date( parse.getTime());
-		
-		
+		if(${pj.name} != null){
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date parse = null;
+			try {
+				parse = fmt.parse(${pj.name});
+				value = new java.sql.Date( parse.getTime());
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		<#else>
 		value = ${pj.name};
 		
 		</#if>
 		
-		<#if pj.type?lower_case == 'int'>
+		<#if pj.type?lower_case == 'integer'>
 		<#if pj.state>
 		${tableName?uncap_first}.set${pj.name?cap_first}((Integer)value);
 		<#else>
@@ -151,20 +157,20 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		String ${pkEntity.name} = req.getParameter("${pkEntity.name}");
 		
-		<#if pkEntity.type?lower_case == 'int'>
-		
-		value = Integer.valueOf(${pkEntity.name});
-		
+		<#if pkEntity.type?lower_case == 'integer'>
+		if(${pkEntity.name} != null){
+			value = Integer.valueOf(${pkEntity.name});
+		}
 		<#elseif pkEntity.type?lower_case == 'double'>
-		
-		value = Double.valueOf(${pkEntity.name});
-		
+		if(${pkEntity.name} != null){
+			value = Double.valueOf(${pkEntity.name});
+		}
 		<#elseif pkEntity.type?lower_case == 'date'>
-		
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.Date parse = fmt.parse(${pkEntity.name});
-		value = new java.sql.Date( parse.getTime());
-		
+		if(${pkEntity.name} != null){
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date parse = fmt.parse(${pkEntity.name});
+			value = new java.sql.Date( parse.getTime());
+		}
 		
 		<#else>
 		value = ${pkEntity.name};
@@ -172,7 +178,7 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		${tableName?cap_first} ${tableName?uncap_first} = new ${tableName?cap_first}();
 		
-		<#if pkEntity.type?lower_case == 'int'>
+		<#if pkEntity.type?lower_case == 'integer'>
 		<#if pkEntity.state>
 		${tableName?uncap_first}.set${pkEntity.name?cap_first}((Integer)value);
 		<#else>
@@ -205,29 +211,33 @@ public class ${className?cap_first} extends HttpServlet{
 		
 		<#if list??>
 		<#list list as pj>
-		
 		String ${pj.name} = req.getParameter("${pj.name}");
-		<#if pj.type?lower_case == 'int'>
-		
-		value = Integer.valueOf(${pj.name});
-		
+		<#if pj.type?lower_case == 'integer'>
+		if(${pj.name} != null){
+			value = Integer.valueOf(${pj.name});
+		}
 		<#elseif pj.type?lower_case == 'double'>
-		
-		value = Double.valueOf(${pj.name});
-		
+		if(${pj.name} != null){
+			value = Double.valueOf(${pj.name});
+		}
 		<#elseif pj.type?lower_case == 'date'>
-		
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.Date parse = fmt.parse(${pj.name});
-		value = new java.sql.Date( parse.getTime());
-		
-		
+		if(${pj.name} != null){
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date parse;
+			try {
+				parse = parse = fmt.parse(${pj.name});
+				value = new java.sql.Date( parse.getTime());
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		<#else>
 		value = ${pj.name};
 		
 		</#if>
 		
-		<#if pj.type?lower_case == 'int'>
+		<#if pj.type?lower_case == 'integer'>
 		<#if pj.state>
 		${tableName?uncap_first}.set${pj.name?cap_first}((Integer)value);
 		<#else>

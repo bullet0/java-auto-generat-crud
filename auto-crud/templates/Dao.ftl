@@ -107,28 +107,38 @@ public class ${className?cap_first} {
 		}
 	}
 
-	public Stu findOne(${tableName?cap_first} ${tableName?uncap_first}1) {
+	public ${tableName?cap_first} findOne(${tableName?cap_first} ${tableName?uncap_first}1) {
 		Connection conn = this.getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn.setAutoCommit(false);
-			ps = conn.prepareStatement("select * from ${tableName?cap_first} where ${snakeCasePKName}=?");
+			ps = conn.prepareStatement("select * from ${snaketableName} where ${snakeCasePKName}=?");
+			
 			<#if pkEntity.state>
 			ps.setObject(1, ${tableName?uncap_first}1.get${pkEntity.name?cap_first}());
 			<#else>
 			ps.setObject(1, ${tableName?uncap_first}1.get${pkEntity.name}());
 			</#if>
+			
 			rs = ps.executeQuery();
 			conn.commit();
 			${tableName?cap_first} ${tableName?uncap_first} = null;
 			while (rs.next()) {
 				${tableName?uncap_first} = new ${tableName?cap_first}();
 				<#list list as l>
+				<#if l.type?lower_case == 'integer'>
+				<#if l.state>
+				${tableName?uncap_first}.set${l.name?cap_first}(rs.getInt("${snakeCase[l_index].name}"));
+				<#else>
+				${tableName?uncap_first}.set${l.name}(rs.getInt("${snakeCase[l_index].name}"));
+				</#if>
+				<#else>
 				<#if l.state>
 				${tableName?uncap_first}.set${l.name?cap_first}(rs.get${l.type?cap_first}("${snakeCase[l_index].name}"));
 				<#else>
 				${tableName?uncap_first}.set${l.name}(rs.get${l.type?cap_first}("${snakeCase[l_index].name}"));
+				</#if>
 				</#if>
 				</#list>
 			}
@@ -142,23 +152,32 @@ public class ${className?cap_first} {
 		return null;
 	}
 
-	public List<Stu> findAll() {
+	public List<${tableName?cap_first}> findAll() {
 		Connection conn = this.getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<${tableName}> list = new ArrayList<${tableName}>();
 		try {
 			conn.setAutoCommit(false);
-			ps = conn.prepareStatement("select * from ${tableName?cap_first}");
+			ps = conn.prepareStatement("select * from ${snaketableName}");
 			rs = ps.executeQuery();
 			conn.commit();
 			while (rs.next()) {
 				${tableName?cap_first} ${tableName?uncap_first} = new ${tableName?cap_first}();
 				<#list list as l>
+				
+				<#if l.type?lower_case == 'integer'>
+				<#if l.state>
+				${tableName?uncap_first}.set${l.name?cap_first}(rs.getInt("${snakeCase[l_index].name}"));
+				<#else>
+				${tableName?uncap_first}.set${l.name}(rs.getInt("${snakeCase[l_index].name}"));
+				</#if>
+				<#else>
 				<#if l.state>
 				${tableName?uncap_first}.set${l.name?cap_first}(rs.get${l.type?cap_first}("${snakeCase[l_index].name}"));
 				<#else>
 				${tableName?uncap_first}.set${l.name}(rs.get${l.type?cap_first}("${snakeCase[l_index].name}"));
+				</#if>
 				</#if>
 				</#list>
 				list.add(${tableName?uncap_first});

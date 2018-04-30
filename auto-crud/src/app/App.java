@@ -24,7 +24,7 @@ import org.dom4j.io.SAXReader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
-public class Test {
+public class App {
 	private static Element rootElement;
 	private static Connection connection;
 	
@@ -93,7 +93,7 @@ public class Test {
 				int columnType = metaData.getColumnType(i+1);
 				String type = null;
 				if(columnType == 4) {
-					type = "int";
+					type = "Integer";
 				}else if(columnType == 12) {
 					type = "String";
 				}else if(columnType == 91) {
@@ -234,6 +234,7 @@ public class Test {
 		dataMap.put("baseClassPath", packageName.replaceAll("/", "\\."));
 		dataMap.put("packagePath", packageName.replaceAll("/", "\\.") + ".dao");
 		dataMap.put("tableName", toUpperCase(tbName));
+		dataMap.put("snaketableName", toSnake(tbName));
 		dataMap.put("className", toUpperCase(tbName)+"Dao");
 		dataMap.put("list", list);
 		dataMap.put("snakeCase", snakeCase);
@@ -241,7 +242,7 @@ public class Test {
 		dataMap.put("snakeCasePKName", toSnake(pkEntity.getName()));
 		
 		StringBuilder deleteSQL = new StringBuilder("delete from ");
-		deleteSQL.append(tbName);
+		deleteSQL.append(toSnake(tbName));
 		deleteSQL.append(" where ");
 		deleteSQL.append(toSnake(pkEntity.getName()));
 		deleteSQL.append(" = ?");
@@ -249,7 +250,7 @@ public class Test {
 		System.out.println(deleteSQL);
 		
 		StringBuilder updateSQL = new StringBuilder("update ");
-		updateSQL.append(tbName);
+		updateSQL.append(toSnake(tbName));
 		updateSQL.append(" set ");
 		for (Entity entity : snakeCase) {
 			updateSQL.append(entity.getName());
@@ -264,7 +265,7 @@ public class Test {
 		
 		
 		StringBuilder insertSQL = new StringBuilder("insert into ");
-		insertSQL.append(tbName);
+		insertSQL.append( toSnake(tbName));
 		insertSQL.append("(");
 		for (Entity entity : snakeCase) {
 			insertSQL.append(entity.getName());
