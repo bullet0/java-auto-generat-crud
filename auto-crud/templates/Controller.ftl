@@ -190,7 +190,10 @@ public class ${className?cap_first} extends HttpServlet{
 		req.setAttribute("${tableName?uncap_first}",${tableName?uncap_first});
 		try {
 			req.getRequestDispatcher("/修改页面").forward(req, resp);
-		} catch (ServletException | IOException e) {
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -262,7 +265,10 @@ public class ${className?cap_first} extends HttpServlet{
 		req.setAttribute("${tableName?uncap_first}s",${tableName?uncap_first}s);
 		try {
 			req.getRequestDispatcher("/查询页面").forward(req, resp);
-		} catch (ServletException | IOException e) {
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

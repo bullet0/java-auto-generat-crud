@@ -16,9 +16,12 @@ public class ${className?cap_first} {
 	public Connection getConnection() {
 		Connection connection = null;
 		try {
-			Class.forName("${url}");
-			connection = DriverManager.getConnection("${driverClass}","${username}","${password}");
-		} catch (ClassNotFoundException | SQLException e) {
+			Class.forName("${driverClass}");
+			connection = DriverManager.getConnection("${url}","${username}","${password}");
+		} catch (ClassNotFoundException  e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -143,7 +146,7 @@ public class ${className?cap_first} {
 		Connection conn = this.getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		List<${tableName}> list = new ArrayList<>();
+		List<${tableName}> list = new ArrayList<${tableName}>();
 		try {
 			conn.setAutoCommit(false);
 			ps = conn.prepareStatement("select * from ${tableName?cap_first}");
