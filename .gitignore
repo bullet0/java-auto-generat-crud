@@ -54,4 +54,4 @@
 hs_err_pid*
 
 # 忽略com包下文件
-com
+#com
