@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <autoConfiguration>
+	<!-- 配置数据源 连接数据库 -->
 	<dataSource>
 		<url>jdbc:mysql:///my_lol?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Hongkong</url>
 		<driverClass>com.mysql.cj.jdbc.Driver</driverClass>
 		<username>root</username>
 		<password>123456</password>
 	</dataSource>
+	<!--  指定生成 crud 的表  每一个table标签代表一个表，不能在一个标签中设置多个tableName，需要分开设置-->
 	<tables>
 		<table>
 			<package>com/hero</package>
